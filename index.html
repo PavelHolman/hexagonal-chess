@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+    <title>Hexagonal Chess</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #131010; }
+      #unity-canvas { display: block; width: 100%; height: 100%; background: #131010; }
+      #loading {
+        position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 18px; font: 500 14px/1.4 system-ui, sans-serif; letter-spacing: 0.25em; color: #c9bda5;
+      }
+      #bar { width: 240px; height: 3px; background: #2b2420; border-radius: 2px; overflow: hidden; }
+      #fill { width: 0; height: 100%; background: #f3e9d2; transition: width 0.2s; }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="loading">
+      <div>HEXAGONAL CHESS</div>
+      <div id="bar"><div id="fill"></div></div>
+    </div>
+    <script src="Build/WebGL.loader.js"></script>
+    <script>
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/WebGL.data.unityweb",
+        frameworkUrl: "Build/WebGL.framework.js.unityweb",
+        codeUrl: "Build/WebGL.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Pavel Holman",
+        productName: "Hexagonal Chess",
+        productVersion: "0.1",
+      }, (progress) => {
+        document.querySelector("#fill").style.width = Math.round(progress * 100) + "%";
+      }).then(() => {
+        document.querySelector("#loading").remove();
+      }).catch((message) => {
+        document.querySelector("#loading").textContent = message;
+      });
+    </script>
+  </body>
+</html>
