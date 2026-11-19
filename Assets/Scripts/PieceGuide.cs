@@ -39,11 +39,11 @@ public class PieceGuide : MonoBehaviour
         { typeof(Pawn), new PieceDoc("Pawn", "Classic piece",
             "Moves one tile forward (two on its first move) and captures one tile diagonally forward. Becomes a Queen on the far edge, or after its third capture. En passant applies.") },
         { typeof(Assassin), new PieceDoc("Assassin", "Special piece",
-            "Moves up to 3 tiles in a straight line. If it moves without capturing, it gets a second move straight away. It can't capture the Sniper or the Wizard.") },
+            "Moves up to 3 tiles in a straight line. If it moves without capturing, it gets a second move straight away.") },
         { typeof(Sniper), new PieceDoc("Sniper", "Special piece",
-            "Never moves. Shoots an enemy up to 2 tiles away in a straight line, or 1 diagonal step away, even over other pieces. Then reloads for 10 moves.") },
+            "Never moves. Shoots an enemy up to 2 tiles away in a straight line, or 1 diagonal step away, even over other pieces. Then reloads for 10 moves. Can't be captured.") },
         { typeof(Wizard), new PieceDoc("Wizard", "Special piece",
-            "Never moves. Stuns an enemy in the same range as the Sniper: the stunned piece can't move on its side's next turn. Then recharges for 10 moves.") },
+            "Never moves. Stuns an enemy in the same range as the Sniper: the stunned piece can't move on its side's next turn. Then recharges for 10 moves. Can't be captured.") },
     };
 
     private static readonly System.Type[] GuideOrder =
