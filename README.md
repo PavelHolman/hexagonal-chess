@@ -50,14 +50,3 @@ and a piece guide, and published as a WebGL build.
 ## Run it locally
 
 Open the project in **Unity 6000.6** (Unity Hub → Add → this folder) and press Play in `Assets/Scenes/SampleScene`.
-
-To build from the command line:
-
-```bash
-UNITY=/Applications/Unity/Hub/Editor/6000.6.10f1/Unity.app/Contents/MacOS/Unity
-"$UNITY" -batchmode -quit -projectPath . -buildTarget WebGL -executeMethod BuildScript.BuildWebGL
-"$UNITY" -batchmode -quit -projectPath . -buildTarget OSXUniversal -executeMethod BuildScript.BuildMac
-```
-
-Builds go to `Builds/`. [`scripts/deploy-pages.sh`](scripts/deploy-pages.sh) builds the WebGL version and publishes it
-to the `gh-pages` branch.
