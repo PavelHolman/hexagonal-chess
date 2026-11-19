@@ -9,7 +9,11 @@ public static class BuildScript
 
     public static void BuildWebGL()
     {
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        // Gzip with a JS decompression fallback, so static hosts like GitHub Pages
+        // can serve the build without Content-Encoding headers
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        PlayerSettings.WebGL.template = "PROJECT:FullWindow";
         BuildPipeline.BuildPlayer(Scenes, "Builds/WebGL", BuildTarget.WebGL, BuildOptions.None);
     }
 }
