@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 public class BoardScript : MonoBehaviour
@@ -27,7 +28,13 @@ public class BoardScript : MonoBehaviour
     public Vector3 VectorX = new Vector3(-TILE_SHIFT, 0, TILE_HEIGTH / 2);
     public Vector3 VectorY = new Vector3(0, 0, TILE_HEIGTH);
 
-    public Text StatusText;
+    public TMP_Text StatusText;
+
+    /// <summary>
+    /// Array coordinates of the tile under the cursor, -1 when off the board
+    /// </summary>
+    public int HoverX => coordinateX;
+    public int HoverY => coordinateY;
 
     /// <summary>
     /// Array of allowed moves
@@ -123,7 +130,10 @@ public class BoardScript : MonoBehaviour
     /// </summary>
     private void HighlightSelected(int x, int y)
     {
-        highlight = Instantiate(Highlitghts.Instance.highlightPrefab);
+        if (highlight == null)
+        {
+            highlight = Instantiate(Highlitghts.Instance.highlightPrefab);
+        }
         highlight.SetActive(true);
         highlight.transform.position = (BoardScript.Instance.VectorX * (5 - x)) + (BoardScript.Instance.VectorY * (5 - y)) + (Vector3.up * 0.07f);
     }
@@ -264,9 +274,32 @@ public class BoardScript : MonoBehaviour
             return;
         }
         ChessPieces[selectedChessPiece.CurrentX, selectedChessPiece.CurrentY] = null;
-        selectedChessPiece.transform.position = GetPosition(x, y);
+        StartCoroutine(Glide(selectedChessPiece.transform, GetPosition(x, y)));
         selectedChessPiece.SetPosition(x, y);
         ChessPieces[x, y] = selectedChessPiece;
+    }
+
+    /// <summary>
+    /// Slide a piece to its new tile with a small hop
+    /// </summary>
+    private IEnumerator Glide(Transform piece, Vector3 target)
+    {
+        Vector3 start = piece.position;
+        float hop = Mathf.Min(0.4f, Vector3.Distance(start, target) * 0.1f);
+        for (float t = 0; t < 1f; t += Time.deltaTime / 0.28f)
+        {
+            if (piece == null)
+            {
+                yield break;
+            }
+            float e = Mathf.SmoothStep(0f, 1f, t);
+            piece.position = Vector3.Lerp(start, target, e) + Vector3.up * (Mathf.Sin(Mathf.PI * e) * hop);
+            yield return null;
+        }
+        if (piece != null)
+        {
+            piece.position = target;
+        }
     }
 
     /// <summary>
@@ -507,15 +540,12 @@ public class BoardScript : MonoBehaviour
     {
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 50f, LayerMask.GetMask("Default")))
         {
-            if (hit.transform != null)
-            {
-                FindCoords(hit, out coordinateX, out coordinateY);
-            }
-            else
-            {
-                coordinateX = -1;
-                coordinateY = -1;
-            }
+            FindCoords(hit, out coordinateX, out coordinateY);
+        }
+        else
+        {
+            coordinateX = -1;
+            coordinateY = -1;
         }
     }
     
