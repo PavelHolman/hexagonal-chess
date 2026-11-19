@@ -23,6 +23,8 @@ public class SceneDressing : MonoBehaviour
 
     private void Start()
     {
+        gameObject.AddComponent<PieceGuide>();
+
         if (hoverPrefab != null)
         {
             hover = Instantiate(hoverPrefab);

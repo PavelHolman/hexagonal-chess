@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,6 +38,16 @@ public class BoardScript : MonoBehaviour
     public int HoverY => coordinateY;
 
     /// <summary>
+    /// Currently selected piece, null when nothing is selected
+    /// </summary>
+    public ChessPiece SelectedPiece => selectedChessPiece;
+
+    /// <summary>
+    /// Set while an overlay (the rules) covers the board
+    /// </summary>
+    public static bool InputBlocked;
+
+    /// <summary>
     /// Array of allowed moves
     /// </summary>
     private bool[,] AllowedMoves { get; set; }
@@ -72,7 +83,8 @@ public class BoardScript : MonoBehaviour
     {
         AssignCoordinates();
 
-        if (Input.GetMouseButtonDown(0) && coordinateX > -1 && coordinateY > -1)
+        bool overUi = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        if (Input.GetMouseButtonDown(0) && !InputBlocked && !overUi && coordinateX > -1 && coordinateY > -1)
         {
             if (selectedChessPiece == null)
             {
@@ -121,7 +133,7 @@ public class BoardScript : MonoBehaviour
 
         if ((selectedChessPiece.GetType() == typeof(Wizard) || selectedChessPiece.GetType() == typeof(Sniper)) && selectedChessPiece.coolDown > 0)
         {
-            StatusText.text = selectedChessPiece.GetType().ToString() + " is on cooldown for " + selectedChessPiece.coolDown + " turns.";
+            StatusText.text = selectedChessPiece.GetType().ToString() + " is recharging: ready in " + selectedChessPiece.coolDown + " moves.";
         }
     }
 
