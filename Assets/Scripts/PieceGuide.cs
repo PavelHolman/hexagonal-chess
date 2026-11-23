@@ -148,6 +148,11 @@ public class PieceGuide : MonoBehaviour
         bool open = !rulesOverlay.activeSelf;
         rulesOverlay.SetActive(open);
         BoardScript.InputBlocked = open;
+        if (!open)
+        {
+            // The tap that closed the overlay must not also select a piece under it
+            BoardScript.IgnoreInputUntilFrame = Time.frameCount + 1;
+        }
     }
 
     private void BuildDetailsPanel(Transform canvas)
@@ -222,11 +227,11 @@ public class PieceGuide : MonoBehaviour
     private static string Guide(int from, int to)
     {
         var sb = new System.Text.StringBuilder();
-        sb.Append($"<color={Accent}><size=20>{(from == 0 ? "CLASSIC PIECES" : "SPECIAL PIECES")}</size></color>\n\n");
+        sb.Append($"<color={Accent}><size=100%>{(from == 0 ? "CLASSIC PIECES" : "SPECIAL PIECES")}</size></color>\n\n");
         for (int i = from; i < to; i++)
         {
             var doc = Docs[GuideOrder[i]];
-            sb.Append($"<size=25>{doc.Name}</size>\n<color={Muted}>{doc.Rules}</color>\n<size=10> </size>\n");
+            sb.Append($"<size=125%>{doc.Name}</size>\n<color={Muted}>{doc.Rules}</color>\n<size=50%> </size>\n");
         }
         return sb.ToString();
     }

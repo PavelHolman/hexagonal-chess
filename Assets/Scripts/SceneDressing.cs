@@ -19,13 +19,22 @@ public class SceneDressing : MonoBehaviour
         QualitySettings.shadows = ShadowQuality.All;
         QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
         QualitySettings.shadowDistance = 30f;
+
+        if (Application.isMobilePlatform)
+        {
+            // Lighter settings for phone GPUs
+            QualitySettings.antiAliasing = 2;
+            QualitySettings.shadowResolution = ShadowResolution.Medium;
+        }
     }
 
     private void Start()
     {
         gameObject.AddComponent<PieceGuide>();
+        gameObject.AddComponent<ResponsiveLayout>();
 
-        if (hoverPrefab != null)
+        // No hover on touch screens: the marker would stick to the last tap
+        if (hoverPrefab != null && !Application.isMobilePlatform)
         {
             hover = Instantiate(hoverPrefab);
             hover.name = "Hover";

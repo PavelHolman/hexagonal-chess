@@ -48,6 +48,11 @@ public class BoardScript : MonoBehaviour
     public static bool InputBlocked;
 
     /// <summary>
+    /// Clicks up to and including this frame are ignored (used when an overlay closes)
+    /// </summary>
+    public static int IgnoreInputUntilFrame = -1;
+
+    /// <summary>
     /// Array of allowed moves
     /// </summary>
     private bool[,] AllowedMoves { get; set; }
@@ -77,14 +82,37 @@ public class BoardScript : MonoBehaviour
     }
 
     /// <summary>
+    /// True when the mouse or the current touch is over a UI element
+    /// </summary>
+    private static bool IsPointerOverUi()
+    {
+        var eventSystem = EventSystem.current;
+        if (eventSystem == null)
+        {
+            return false;
+        }
+        if (eventSystem.IsPointerOverGameObject())
+        {
+            return true;
+        }
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            if (eventSystem.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Select chess piece from array or move if already selected
     /// </summary>
     private void SelectOrMoveChessPiece()
     {
         AssignCoordinates();
 
-        bool overUi = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-        if (Input.GetMouseButtonDown(0) && !InputBlocked && !overUi && coordinateX > -1 && coordinateY > -1)
+        if (Input.GetMouseButtonDown(0) && !InputBlocked && Time.frameCount > IgnoreInputUntilFrame && !IsPointerOverUi() && coordinateX > -1 && coordinateY > -1)
         {
             if (selectedChessPiece == null)
             {
